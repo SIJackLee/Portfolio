@@ -1,0 +1,61 @@
+import { SpaceTheme } from "@/components/space/types";
+
+export const spaceTheme: SpaceTheme = {
+  background: {
+    deepSpace: "#05070D",
+    deepSpaceAlt: "#0B1020",
+    nebulaPrimary: "#4A3EC9",
+    nebulaSecondary: "#00BCD4",
+    vignette:
+      "radial-gradient(circle at center, rgba(10,14,24,0) 35%, rgba(4,6,12,0.85) 100%)",
+  },
+  stars: {
+    count: 5000,
+    radius: 0.9,
+    depth: 180,
+    saturation: 0,
+    speed: 0.35,
+  },
+  orbit: {
+    radiusX: 7.3,
+    radiusY: 4.6,
+    nodeSize: 0.42,
+    glowScale: 1.95,
+    rotationSpeed: 0.06,
+    hoverEmissiveBoost: 1.6,
+  },
+  glow: {
+    coreColor: "#6C63FF",
+    auraColor: "#33E0FF",
+    cloudColor: "#B6C0FF",
+    emissiveIntensity: 3.7,
+    coreScale: 1.2,
+    pulseSpeed: 0.5,
+    atmosphereColor: "#8F9BFF",
+    ringColor: "#77E5FF",
+    outerRingColor: "#8CFFF2",
+    ringTilt: 0.55,
+    ringTiltSecondary: 0.88,
+    fresnelPower: 2.2,
+    fresnelIntensity: 1.45,
+  },
+  lightRig: {
+    ambientIntensity: 0.26,
+    keyIntensity: 1.5,
+    keyColor: "#AAB4FF",
+    keyPosition: [2.8, 2.6, 2.4],
+    rimIntensity: 1.15,
+    rimColor: "#67E8FF",
+    rimPosition: [-3.5, -0.2, -3.2],
+    fillIntensity: 0.5,
+    fillColor: "#6E8DFF",
+    fillPosition: [0.5, -2.2, 2.5],
+  },
+  postFx: {
+    bloomIntensity: 1.45,
+    bloomLuminanceThreshold: 0.19,
+    bloomLuminanceSmoothing: 0.34,
+    noiseOpacity: 0.04,
+    chromaticAberrationOffset: 0.0009,
+  },
+};

@@ -1,0 +1,148 @@
+import { PlanetDomain } from "@/components/space/types";
+
+export const planets: PlanetDomain[] = [
+  {
+    id: "simulation",
+    label: "Simulation",
+    stackLabel: "Simulation",
+    icon: "∿",
+    color: "#7C4DFF",
+    summary: "Model-based simulation and digital twin validation.",
+    orbitIndex: 0,
+    projects: [
+      {
+        title: "Thermal Drift Sandbox",
+        description: "Validated sensor drift behavior before hardware fabrication.",
+        tags: ["MATLAB", "Digital Twin"],
+        url: "#",
+        status: "study",
+      },
+    ],
+  },
+  {
+    id: "circuit",
+    label: "Circuit",
+    stackLabel: "Cirsuit",
+    icon: "⌁",
+    color: "#00E5FF",
+    summary: "Signal integrity, low-noise power and sensor interface design.",
+    orbitIndex: 1,
+    projects: [
+      {
+        title: "Low-Power Sensor Board",
+        description: "Optimized battery profile and stable analog front-end.",
+        tags: ["PCB", "Power"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+  {
+    id: "protocol",
+    label: "Protocol",
+    stackLabel: "Protocol",
+    icon: "◉",
+    color: "#00C853",
+    summary: "MQTT/HTTP/Modbus protocol architecture and gateway strategy.",
+    orbitIndex: 2,
+    projects: [
+      {
+        title: "Hybrid Gateway Protocol Layer",
+        description: "Unified telemetry contracts across mixed field devices.",
+        tags: ["MQTT", "Modbus"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+  {
+    id: "server",
+    label: "Server",
+    stackLabel: "Cloud",
+    icon: "▥",
+    color: "#FF9100",
+    summary: "Event-driven services for ingestion, control and operations.",
+    orbitIndex: 3,
+    projects: [
+      {
+        title: "Device Command Orchestrator",
+        description: "Built resilient command queue with retry and audit trails.",
+        tags: ["Node.js", "Queue"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+  {
+    id: "db",
+    label: "DB",
+    stackLabel: "Database",
+    icon: "◍",
+    color: "#2979FF",
+    summary: "Time-series and operational schema for fast observability queries.",
+    orbitIndex: 4,
+    projects: [
+      {
+        title: "Telemetry Storage Strategy",
+        description: "Separated hot-path metrics from transactional data.",
+        tags: ["PostgreSQL", "Timeseries"],
+        url: "#",
+        status: "study",
+      },
+    ],
+  },
+  {
+    id: "web",
+    label: "Web",
+    stackLabel: "Web",
+    icon: "⌬",
+    color: "#FF4081",
+    summary: "Real-time dashboard UX for operations and incident response.",
+    orbitIndex: 5,
+    projects: [
+      {
+        title: "Ops Command Dashboard",
+        description: "Designed control panel for alerts, maps and device actions.",
+        tags: ["Next.js", "Realtime UI"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+  {
+    id: "data-engineering",
+    label: "Data Engineering",
+    stackLabel: "Data Analysis",
+    icon: "⇉",
+    color: "#FFD600",
+    summary: "Ingestion, transformation and warehouse-ready pipelines.",
+    orbitIndex: 6,
+    projects: [
+      {
+        title: "Streaming ETL Backbone",
+        description: "Automated cleansing and enrichment for sensor streams.",
+        tags: ["ETL", "Kafka"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+  {
+    id: "ai",
+    label: "AI",
+    stackLabel: "AI Autiomation",
+    icon: "◎",
+    color: "#FF1744",
+    summary: "Anomaly detection and prediction integrated into operations.",
+    orbitIndex: 7,
+    projects: [
+      {
+        title: "Predictive Maintenance Model",
+        description: "Integrated model inference into live monitoring loop.",
+        tags: ["ML", "Anomaly Detection"],
+        url: "#",
+        status: "project",
+      },
+    ],
+  },
+];
