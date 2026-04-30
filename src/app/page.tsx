@@ -250,23 +250,31 @@ export default function Home() {
         }}
       />
 
-      <section
-        className={`hero-copy ${centralExpanded ? "is-condensed" : ""} ${
-          mode === "focus" && !focusContentVisible ? "focus-ui-hidden" : "focus-ui-visible"
-        }`}
-      >
-        <div className={`hero-layer hero-layer-full ${centralExpanded ? "is-hidden" : "is-visible"}`}>
-          <p className="eyebrow">8 Domains, One Integrated Platform</p>
-          <h1>IoT System Architect</h1>
-          <p>
-            From Simulation to AI, I design the entire lifecycle of intelligent IoT
-            systems.
-          </p>
-        </div>
-        <div className={`hero-layer hero-layer-condensed ${centralExpanded ? "is-visible" : "is-hidden"}`}>
-          {showCenterIotLabel ? null : <h1 style={condensedTitleColor ? { color: condensedTitleColor } : undefined}>{condensedTitle}</h1>}
-        </div>
-      </section>
+      {renderPhase === "grid" && selectedPlanet && (
+        <header className="grid-focus-title" aria-live="polite">
+          <h1 style={{ color: selectedPlanet.color }}>{selectedPlanet.stackLabel}</h1>
+        </header>
+      )}
+
+      {renderPhase !== "grid" && (
+        <section
+          className={`hero-copy ${centralExpanded ? "is-condensed" : ""} ${
+            mode === "focus" && !focusContentVisible ? "focus-ui-hidden" : "focus-ui-visible"
+          }`}
+        >
+          <div className={`hero-layer hero-layer-full ${centralExpanded ? "is-hidden" : "is-visible"}`}>
+            <p className="eyebrow">8 Domains, One Integrated Platform</p>
+            <h1>IoT System Architect</h1>
+            <p>
+              From Simulation to AI, I design the entire lifecycle of intelligent IoT
+              systems.
+            </p>
+          </div>
+          <div className={`hero-layer hero-layer-condensed ${centralExpanded ? "is-visible" : "is-hidden"}`}>
+            {showCenterIotLabel ? null : <h1 style={condensedTitleColor ? { color: condensedTitleColor } : undefined}>{condensedTitle}</h1>}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

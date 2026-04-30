@@ -319,6 +319,26 @@ body {
   color: rgba(183, 206, 239, 0.8);
 }
 
+.grid-focus-title {
+  position: fixed;
+  top: 3.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+  text-align: center;
+}
+
+.grid-focus-title h1 {
+  margin: 0;
+  font-size: clamp(3rem, 6.8vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 0 18px rgba(120, 151, 255, 0.44),
+    0 0 44px rgba(86, 198, 255, 0.32);
+}
+
 @media (max-width: 768px) {
   .interaction-toggle {
     right: 0.75rem;
@@ -337,6 +357,10 @@ body {
 
   .hero-layer-condensed h1 {
     transform: translateY(112px);
+  }
+
+  .grid-focus-title {
+    top: 2.4rem;
   }
 }
 
