@@ -2,9 +2,10 @@
 
 import { Line } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { MutableRefObject, useMemo, useState } from "react";
+import { MutableRefObject, useMemo, useRef, useState } from "react";
 import { PlanetNode } from "@/components/space/PlanetNode";
-import { PlanetDomain } from "@/components/space/types";
+import { FocusMergeRole, InteractionMode, PlanetDomain } from "@/components/space/types";
+import { spaceTheme } from "@/config/spaceTheme";
 
 interface OrbitPlanetsProps {
   planets: PlanetDomain[];
@@ -12,6 +13,8 @@ interface OrbitPlanetsProps {
   hoveredId: PlanetDomain["id"] | null;
   onHover: (id: PlanetDomain["id"] | null) => void;
   onSelect: (id: PlanetDomain["id"]) => void;
+  interactionMode: InteractionMode;
+  mergeProgressRef: MutableRefObject<number>;
   radiusX: number;
   radiusY: number;
   nodeSize: number;
@@ -28,6 +31,8 @@ export function OrbitPlanets({
   hoveredId,
   onHover,
   onSelect,
+  interactionMode,
+  mergeProgressRef,
   radiusX,
   radiusY,
   nodeSize,
@@ -38,9 +43,15 @@ export function OrbitPlanets({
   orbitPhaseRef,
 }: OrbitPlanetsProps) {
   const [orbitPhase, setOrbitPhase] = useState(0);
+  /** Mirrors `mergeProgressRef` for render-only math (ref must not be read during render). */
+  const [mergeProgressRender, setMergeProgressRender] = useState(0);
+  const lastMergePushRef = useRef<number>(-1);
+
   const axisRotation = (axisRotationDeg * Math.PI) / 180;
   const cosAxis = Math.cos(axisRotation);
   const sinAxis = Math.sin(axisRotation);
+  const peerRadiusMul = spaceTheme.orbit.focusMerge.peerOrbitRadiusMul;
+
   const orbitPathPoints = useMemo(() => {
     const segments = 120;
     const points: [number, number, number][] = [];
@@ -56,9 +67,28 @@ export function OrbitPlanets({
   }, [radiusX, radiusY, cosAxis, sinAxis]);
 
   useFrame((_, delta) => {
-    orbitPhaseRef.current += delta * rotationSpeed;
+    /** Freeze orbit while focus+planet selected so camera / merge settle targets stay still. */
+    const freezeOrbit = interactionMode === "focus" && selectedId !== null;
+    if (!freezeOrbit) {
+      orbitPhaseRef.current += delta * rotationSpeed;
+    }
     setOrbitPhase(orbitPhaseRef.current);
+
+    const focusSel = interactionMode === "focus" && selectedId !== null;
+    const rawMp = focusSel ? mergeProgressRef.current : 0;
+    const prev = lastMergePushRef.current;
+    if (
+      Math.abs(rawMp - prev) > 0.012 ||
+      (rawMp === 0 && prev !== 0 && prev !== -1) ||
+      (rawMp >= 0.998 && prev < 0.998)
+    ) {
+      lastMergePushRef.current = rawMp;
+      setMergeProgressRender(rawMp);
+    }
   });
+
+  const focusWithSelection = interactionMode === "focus" && selectedId !== null;
+  const peerScale = focusWithSelection ? 1 + mergeProgressRender * (peerRadiusMul - 1) : 1;
 
   return (
     <group position={[0, 0, -14]}>
@@ -78,6 +108,17 @@ export function OrbitPlanets({
         const z = Math.sin(angle * 1.5) * 0.8;
         const isSelected = selectedId === planet.id;
         const isHovered = hoveredId === planet.id;
+        const isPeer = focusWithSelection && !isSelected;
+        const px = isPeer ? x * peerScale : x;
+        const py = isPeer ? y * peerScale : y;
+        const pz = isPeer ? z * peerScale : z;
+
+        const focusMergeRole: FocusMergeRole =
+          interactionMode === "focus" && selectedId === planet.id
+            ? "target"
+            : interactionMode === "focus" && selectedId !== null && selectedId !== planet.id
+              ? "peer"
+              : "idle";
 
         return (
           <group key={planet.id}>
@@ -85,7 +126,7 @@ export function OrbitPlanets({
               <Line
                 points={[
                   [0, 0, 0],
-                  [x, y, z],
+                  [px, py, pz],
                 ]}
                 color={planet.color}
                 lineWidth={1.2}
@@ -95,12 +136,14 @@ export function OrbitPlanets({
             )}
             <PlanetNode
               planet={planet}
-              position={[x, y, z]}
+              position={[px, py, pz]}
               size={nodeSize}
               glowScale={glowScale}
               isHovered={isHovered}
               isSelected={isSelected}
               hoverEmissiveBoost={hoverEmissiveBoost}
+              mergeProgressRef={mergeProgressRef}
+              focusMergeRole={focusMergeRole}
               onHover={onHover}
               onSelect={onSelect}
             />

@@ -3,8 +3,9 @@
 import { Canvas } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
 import { ReactNode, useRef } from "react";
-import { Group, PerspectiveCamera } from "three";
+import { Group } from "three";
 import { CameraFocusController } from "@/components/space/CameraFocusController";
+import { FocusMergeDriver } from "@/components/space/FocusMergeDriver";
 import { StarField } from "@/components/space/StarField";
 import { GlowCore } from "@/components/space/GlowCore";
 import { PostFx } from "@/components/space/PostFx";
@@ -23,16 +24,13 @@ interface SpaceSceneProps {
   centralExpanded: boolean;
   onToggleCentralExpanded: () => void;
   expandScale: number;
+  showCenterIotLabel: boolean;
+  centerHoverColor: string | null;
+  centerHoverPlanetId: PlanetDomain["id"] | null;
 }
 
 function CameraDrift({ enabled }: { enabled: boolean }) {
-  const cameraRef = useRef<PerspectiveCamera | null>(null);
-
   useFrame(({ camera, clock }) => {
-    if (!cameraRef.current) {
-      cameraRef.current = camera as PerspectiveCamera;
-    }
-
     if (!enabled) return;
 
     const t = clock.getElapsedTime();
@@ -76,11 +74,15 @@ export function SpaceScene({
   centralExpanded,
   onToggleCentralExpanded,
   expandScale,
+  showCenterIotLabel,
+  centerHoverColor,
+  centerHoverPlanetId,
 }: SpaceSceneProps) {
   const isLowPower =
     typeof window !== "undefined" &&
     window.matchMedia("(max-width: 768px)").matches;
   const orbitPhaseRef = useRef(0);
+  const mergeProgressRef = useRef(0);
   const selectedPlanet =
     planets.find((planet) => planet.id === selectedPlanetId) ?? null;
   const isFocusMode = interactionMode === "focus";
@@ -97,6 +99,18 @@ export function SpaceScene({
       <CameraFocusController
         selectedPlanet={selectedPlanet}
         enabled={isFocusMode}
+        totalPlanets={planets.length}
+        radiusX={spaceTheme.orbit.radiusX}
+        radiusY={spaceTheme.orbit.radiusY}
+        axisRotationDeg={orbitAxisRotationDeg}
+        orbitPhaseRef={orbitPhaseRef}
+        orbitExpanded={centralExpanded}
+        orbitExpandScale={expandScale}
+      />
+      <FocusMergeDriver
+        mergeProgressRef={mergeProgressRef}
+        interactionMode={interactionMode}
+        selectedPlanet={selectedPlanet}
         totalPlanets={planets.length}
         radiusX={spaceTheme.orbit.radiusX}
         radiusY={spaceTheme.orbit.radiusY}
@@ -135,6 +149,8 @@ export function SpaceScene({
           hoveredId={hoveredPlanetId}
           onHover={onHoverPlanet}
           onSelect={onSelectPlanet}
+          interactionMode={interactionMode}
+          mergeProgressRef={mergeProgressRef}
           radiusX={spaceTheme.orbit.radiusX}
           radiusY={spaceTheme.orbit.radiusY}
           nodeSize={spaceTheme.orbit.nodeSize}
@@ -150,6 +166,9 @@ export function SpaceScene({
         {...spaceTheme.glow}
         isExpanded={centralExpanded}
         onToggleExpand={onToggleCentralExpanded}
+        showCenterIotLabel={showCenterIotLabel}
+        hoverAccentColor={centerHoverColor}
+        hoverAccentPlanetId={centerHoverPlanetId}
       />
       <PostFx
         bloomIntensity={isLowPower ? 0.8 : spaceTheme.postFx.bloomIntensity}

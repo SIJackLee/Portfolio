@@ -23,11 +23,27 @@ export const spaceTheme: SpaceTheme = {
     glowScale: 1.95,
     rotationSpeed: 0.06,
     hoverEmissiveBoost: 1.6,
+    /**
+     * Icon cap (see `PlanetNode` `cappedIconLayoutScale`): for nodeSize=0.42, glowScale=1.95,
+     * base anchor offset ratio d0≈hypot(1.28,0,0), tangent ratio √(glowScale²−d0²)≈1.47;
+     * with inset 0.92 we want halfExtent·scale ≤ 1.35·size → constant ≈1.35 (empirical vs glyphs).
+     */
+    orbitIconHalfExtentPerLayoutScale: 1.35,
+    orbitIconSphereInset: 0.92,
+    focusMerge: {
+      cameraSettleEps: 0.22,
+      cameraSettleFrames: 6,
+      minDelayMs: 220,
+      progressLerpSpeed: 1.65,
+      progressLerpOutMul: 2.85,
+      peerOrbitRadiusMul: 0.88,
+      peerDimStrength: 0.52,
+    },
   },
   glow: {
-    coreColor: "#6C63FF",
-    auraColor: "#33E0FF",
-    cloudColor: "#B6C0FF",
+    coreColor: "#E8D9AF",
+    auraColor: "#B8FFCF",
+    cloudColor: "#E9FFD8",
     emissiveIntensity: 3.7,
     coreScale: 1.2,
     pulseSpeed: 0.5,
@@ -52,8 +68,8 @@ export const spaceTheme: SpaceTheme = {
     fillPosition: [0.5, -2.2, 2.5],
   },
   postFx: {
-    bloomIntensity: 1.45,
-    bloomLuminanceThreshold: 0.19,
+    bloomIntensity: 0.9,
+    bloomLuminanceThreshold: 0.28,
     bloomLuminanceSmoothing: 0.34,
     noiseOpacity: 0.04,
     chromaticAberrationOffset: 0.0009,

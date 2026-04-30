@@ -1,8 +1,9 @@
 "use client";
 
 import { useFrame, useThree } from "@react-three/fiber";
-import { MutableRefObject, useMemo } from "react";
+import { MutableRefObject, useMemo, useRef } from "react";
 import { Vector3 } from "three";
+import { focusPlanetLookAtAndCamera } from "@/components/space/focusCameraTarget";
 import { PlanetDomain } from "@/components/space/types";
 
 interface CameraFocusControllerProps {
@@ -30,9 +31,8 @@ export function CameraFocusController({
 }: CameraFocusControllerProps) {
   const { camera } = useThree();
   const fallbackPosition = useMemo(() => new Vector3(0, 0, 8), []);
-  const axisRotation = (axisRotationDeg * Math.PI) / 180;
-  const cosAxis = Math.cos(axisRotation);
-  const sinAxis = Math.sin(axisRotation);
+  const lookAtTmp = useRef(new Vector3());
+  const camTargetTmp = useRef(new Vector3());
 
   useFrame(() => {
     if (!enabled || !selectedPlanet) {
@@ -41,22 +41,21 @@ export function CameraFocusController({
       return;
     }
 
-    const orbitPhase = orbitPhaseRef.current;
-    const angle =
-      (selectedPlanet.orbitIndex / totalPlanets) * Math.PI * 2 + orbitPhase;
-    const baseX = Math.cos(angle) * radiusX;
-    const baseY = Math.sin(angle) * radiusY;
-    const rotatedX = baseX * cosAxis - baseY * sinAxis;
-    const rotatedY = baseX * sinAxis + baseY * cosAxis;
-    const localZ = Math.sin(angle * 1.5) * 0.8;
-    const scale = orbitExpanded ? orbitExpandScale : 1;
-    const worldX = rotatedX * scale;
-    const worldY = rotatedY * scale;
-    const worldZ = (-14 + localZ) * scale;
-    const targetPosition = new Vector3(worldX * 0.56, worldY * 0.56, worldZ + 7.2);
+    const { lookAt, camera: cam } = focusPlanetLookAtAndCamera({
+      selected: selectedPlanet,
+      totalPlanets,
+      orbitPhase: orbitPhaseRef.current,
+      radiusX,
+      radiusY,
+      axisRotationDeg,
+      orbitExpanded,
+      orbitExpandScale,
+    });
+    lookAtTmp.current.set(lookAt[0], lookAt[1], lookAt[2]);
+    camTargetTmp.current.set(cam[0], cam[1], cam[2]);
 
-    camera.position.lerp(targetPosition, 0.024);
-    camera.lookAt(worldX, worldY, worldZ);
+    camera.position.lerp(camTargetTmp.current, 0.017);
+    camera.lookAt(lookAtTmp.current);
   });
 
   return null;
